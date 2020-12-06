@@ -12,12 +12,18 @@ html, body{
 
 input, button{
   font-family: 'Nunito Sans', sans-serif;
+  outline: 0;
 }
 
 body{
-  background-image: url("./assets/images/storm.jpg");
+  background-image: url("./assets/images/default.jpg");
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.App{
+  text-align: center;
+  color: white;
 }
 
 .App .App-header{
@@ -42,7 +48,6 @@ body{
   border: none;
   padding: 5px;
   border-radius: 5px 0 0 5px;
-  outline: 0;
 }
 
 .App .App-header form button{
@@ -76,4 +81,33 @@ main .container{
   align-items: stretch;
   justify-content: center;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.25);
+}
+
+main .container h1{
+  font-size: 24px;
+  font-weight: 400;
+}
+
+main .container span{
+  font-size: 32px;
+  font-weight: bold;
+}
+
+main .container .weather-info{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+main p {
+  font-size: 20px;
+}
+
+@media(max-width: 700px){
+  .App .App-header{    
+    flex-direction: column;
+  }
+  .App .App-header form{    
+    margin-top: 16px;
+  }
 }
