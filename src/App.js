@@ -15,35 +15,43 @@ function App() {
     const res = await api.get(
       `data/2.5/weather?q=${citySearched}&appid=${process.env.REACT_APP_OPEN_WEATHER_KEY}&units=metric&lang=pt_br`
     );
-    console.log(res.data);
-    const data = {
-      city: res.data.name,
-      temp: res.data.main.temp,
-      text: res.data.weather[0].description,
-      hum: res.data.main.humidity,
-      ico: res.data.weather[0].icon,
-    };
-    setCityName(data.city);
-    setTemperature(data.temp);
-    setWeatherText(data.text);
-    setHumidity(data.hum);
-    setIcon(data.ico);
 
-    saveOnLocalStorage(data);
-  }
-
-  function saveOnLocalStorage(data) {
-    window.localStorage.setItem("dataWeather", JSON.stringify(data));
+    setCityName(res.data.name);
+    setTemperature(res.data.main.temp);
+    setWeatherText(res.data.weather[0].description);
+    setHumidity(res.data.main.humidity);
+    setIcon(res.data.weather[0].icon);
   }
 
   useEffect(() => {
-    const dataInfo = JSON.parse(window.localStorage.getItem("dataWeather"));
+    localStorage.setItem(
+      "dataWeather",
+      JSON.stringify({
+        cityName,
+        temperature,
+        weatherText,
+        humidity,
+        icon,
+      })
+    );
+  }, [cityName, temperature, weatherText, humidity, icon]);
 
-    setCityName(dataInfo.city);
-    setTemperature(dataInfo.temp);
-    setWeatherText(dataInfo.text);
-    setHumidity(dataInfo.hum);
-    setIcon(dataInfo.ico);
+  useEffect(() => {
+    const { 
+      cityName, 
+      temperature, 
+      weatherText, 
+      humidity, 
+      icon 
+    } = JSON.parse(
+      localStorage.getItem("dataWeather")
+    );
+
+    setCityName(cityName);
+    setTemperature(temperature);
+    setWeatherText(weatherText);
+    setHumidity(humidity);
+    setIcon(icon);
   }, []);
 
   return (
@@ -65,22 +73,31 @@ function App() {
       </header>
 
       <main>
-        <div className="container">
-          <h1>{cityName}</h1>
+        {localStorage.getItem("dataWeather") ? (
+          <div className="container">
+            <h1>{cityName}</h1>
 
-          <span>{Math.floor(temperature)} &#176;C</span>
-          <div className="weather-info">
-            <p>{weatherText.charAt(0).toUpperCase() + weatherText.slice(1)}</p>
-            <img
-              src={`http://api.openweathermap.org/img/w/${icon}.png`}
-              alt="Weather icon"
-            />
+            <span>{Math.floor(temperature)} &#176;C</span>
+            <div className="weather-info">
+              <p>
+                {weatherText.charAt(0).toUpperCase() + weatherText.slice(1)}
+              </p>
+
+              <img
+                src={`http://api.openweathermap.org/img/w/${icon}.png`}
+                alt="Weather icon"
+              />
+            </div>
+
+            <hr />
+            <br />
+            <p>Humidade: {humidity} &#x0025;</p>
           </div>
-
-          <hr />
-          <br />
-          <p>Humidade: {humidity} &#x0025;</p>
-        </div>
+        ) : (
+          <div className="container">
+            <p>Faça sua busca</p>
+          </div>
+        )}
       </main>
       <footer>Made with &#x2764; by D3V Ninja</footer>
     </div>

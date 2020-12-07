@@ -111,3 +111,7 @@ main p {
     margin-top: 16px;
   }
 }
+
+.none{
+  visibility: hidden;
+}
