@@ -10,6 +10,8 @@ function App() {
   const [humidity, setHumidity] = useState("");
   const [icon, setIcon] = useState("");
 
+  const [hasData, setHasData] = useState(false);
+
   async function handleFormSubmit(e) {
     e.preventDefault();
     const res = await api.get(
@@ -23,36 +25,49 @@ function App() {
     setIcon(res.data.weather[0].icon);
   }
 
-  useEffect(() => {
-    localStorage.setItem(
-      "dataWeather",
-      JSON.stringify({
-        cityName,
-        temperature,
-        weatherText,
-        humidity,
-        icon,
-      })
-    );
-  }, [cityName, temperature, weatherText, humidity, icon]);
+  function saveOnLocalStorage() {
+    if (
+      cityName !== "" &&
+      temperature !== "" &&
+      weatherText !== "" &&
+      temperature !== "" &&
+      icon !== ""
+    ) {
+      localStorage.setItem(
+        "dataWeather",
+        JSON.stringify({
+          cityName,
+          temperature,
+          weatherText,
+          humidity,
+          icon,
+        })
+      );
+      setHasData(true);
+    }
+  }
 
-  useEffect(() => {
-    const { 
-      cityName, 
-      temperature, 
-      weatherText, 
-      humidity, 
-      icon 
-    } = JSON.parse(
-      localStorage.getItem("dataWeather")
-    );
+  function getFromLocalStorage() {
+    const data = JSON.parse(localStorage.getItem("dataWeather"));
 
-    setCityName(cityName);
-    setTemperature(temperature);
-    setWeatherText(weatherText);
-    setHumidity(humidity);
-    setIcon(icon);
-  }, []);
+    if (!data) return;
+
+    setCityName(data.cityName);
+    setTemperature(data.temperature);
+    setWeatherText(data.weatherText);
+    setHumidity(data.humidity);
+    setIcon(data.icon);
+
+  }
+  useEffect(saveOnLocalStorage, [
+    cityName,
+    temperature,
+    weatherText,
+    humidity,
+    icon
+  ]);
+
+  useEffect(getFromLocalStorage, []);
 
   return (
     <div className="App">
@@ -73,7 +88,7 @@ function App() {
       </header>
 
       <main>
-        {localStorage.getItem("dataWeather") ? (
+        {hasData ? (
           <div className="container">
             <h1>{cityName}</h1>
 
@@ -91,7 +106,7 @@ function App() {
 
             <hr />
             <br />
-            <p>Humidade: {humidity} &#x0025;</p>
+            <p>Humidade: {humidity}&#x0025;</p>
           </div>
         ) : (
           <div className="container">
