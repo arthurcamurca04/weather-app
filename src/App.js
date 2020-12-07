@@ -14,15 +14,21 @@ function App() {
 
   async function handleFormSubmit(e) {
     e.preventDefault();
-    const res = await api.get(
-      `data/2.5/weather?q=${citySearched}&appid=${process.env.REACT_APP_OPEN_WEATHER_KEY}&units=metric&lang=pt_br`
-    );
-
-    setCityName(res.data.name);
-    setTemperature(res.data.main.temp);
-    setWeatherText(res.data.weather[0].description);
-    setHumidity(res.data.main.humidity);
-    setIcon(res.data.weather[0].icon);
+   try {
+     if(citySearched !== ""){
+      const res = await api.get(
+        `data/2.5/weather?q=${citySearched}&appid=${process.env.REACT_APP_OPEN_WEATHER_KEY}&units=metric&lang=pt_br`
+      );
+  
+      setCityName(res.data.name);
+      setTemperature(res.data.main.temp);
+      setWeatherText(res.data.weather[0].description);
+      setHumidity(res.data.main.humidity);
+      setIcon(res.data.weather[0].icon);
+     }
+   } catch (error) {
+     console.log('Mensagem de Erro: ', error);
+   }
   }
 
   function saveOnLocalStorage() {
