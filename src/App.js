@@ -1,14 +1,22 @@
 import React, { useState, useEffect } from "react";
 import api from "./api";
 import "./styles.css";
+import defaultImg from './assets/images/default.jpg';
+import cleanImg from './assets/images/clean.jpg';
+import cloudyImg from './assets/images/cloudy.jpg';
+import partialyImg from './assets/images/partialy.jpg';
+import stormImg from './assets/images/storm.jpg';
 
 function App() {
   const [citySearched, setCitySearched] = useState("");
   const [cityName, setCityName] = useState("");
   const [temperature, setTemperature] = useState("");
   const [weatherText, setWeatherText] = useState("");
+  const [weatherDescription, setWeatherDescription] = useState("");
   const [humidity, setHumidity] = useState("");
   const [icon, setIcon] = useState("");
+
+  const [backgroundImg, setBackgroundImg] = useState(defaultImg);
 
   const [hasData, setHasData] = useState(false);
 
@@ -19,10 +27,13 @@ function App() {
       const res = await api.get(
         `data/2.5/weather?q=${citySearched}&appid=${process.env.REACT_APP_OPEN_WEATHER_KEY}&units=metric&lang=pt_br`
       );
+
+      console.log(res.data)
   
       setCityName(res.data.name);
       setTemperature(res.data.main.temp);
       setWeatherText(res.data.weather[0].description);
+      setWeatherDescription(res.data.weather[0].main)
       setHumidity(res.data.main.humidity);
       setIcon(res.data.weather[0].icon);
      }
@@ -64,19 +75,53 @@ function App() {
     setHumidity(data.humidity);
     setIcon(data.icon);
 
+    changeBackgroundImg(weatherDescription);
+
   }
   useEffect(saveOnLocalStorage, [
     cityName,
     temperature,
     weatherText,
     humidity,
-    icon
+    icon, 
+    weatherDescription
   ]);
 
-  useEffect(getFromLocalStorage, []);
+  useEffect(getFromLocalStorage, [weatherDescription]);
+
+  function changeBackgroundImg(description){
+    switch (description) {
+      case 'Clouds':
+        setBackgroundImg(cloudyImg)
+        break;
+      case 'Clear':
+        setBackgroundImg(cleanImg)
+        break;
+      case 'Rain':
+        setBackgroundImg(cloudyImg)
+        break;
+      case 'Drizzle':
+        setBackgroundImg(cloudyImg)
+        break;
+      case 'Mist':
+        setBackgroundImg(partialyImg)
+        break;
+      case 'Thunderstorm':
+        setBackgroundImg(stormImg)
+        break;
+      case 'Snow':
+        setBackgroundImg(cloudyImg)
+        break;
+    
+      default:
+        break;
+    }
+  }
 
   return (
-    <div className="App">
+    <div className="App" style={{
+      backgroundImage: `url(${backgroundImg})`,
+    }}>
       <header className="App-header">
         <h1>Weather React App</h1>
 
